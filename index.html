@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucky-Kit | Sistem Stok Opname Real-time</title>
+    <title>Lucky-Kit | Sistem Stok Opname Single-Device</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS for Excel Import/Export -->
@@ -37,7 +37,6 @@
         }
     </script>
     <style>
-        /* Custom smooth scroll bar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -149,31 +148,24 @@
                             <h1 class="font-bold text-slate-900 text-lg leading-tight">Lucky-Kit</h1>
                             <span class="bg-brand-50 text-brand-700 border border-brand-100 text-xs px-2 py-0.5 rounded-full font-semibold">Stock Opname</span>
                         </div>
-                        <p class="text-xs text-slate-500 hidden sm:block">Sistem Rekonsiliasi & Hitung Stok Real-time</p>
+                        <p class="text-xs text-slate-500 hidden sm:block">Penyimpanan Otomatis di Perangkat Ini (LocalStorage)</p>
                     </div>
                 </div>
 
-                <!-- Sync Status & Active User Switcher -->
+                <!-- Storage Status Indicator & User Selector -->
                 <div class="flex items-center space-x-3 sm:space-x-4">
-                    <!-- Live Sync Indicator -->
                     <div class="flex items-center bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-full px-3 py-1 text-xs font-medium">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 pulse-live"></span>
-                        <span class="hidden md:inline">Real-time Sync Active</span>
-                        <span class="md:hidden">Live</span>
+                        <span class="hidden md:inline">Device Storage Active</span>
+                        <span class="md:hidden">Local Active</span>
                     </div>
-
-                    <!-- Auto Sim Toggle -->
-                    <button id="sim-btn" onclick="toggleMultiUserSimulation()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 font-medium transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-robot text-brand-600"></i>
-                        <span id="sim-text" class="hidden sm:inline">Simulasi Tim (Off)</span>
-                    </button>
 
                     <!-- User Selector -->
                     <div class="relative">
                         <select id="user-selector" onchange="changeActiveUser(this.value)" class="bg-slate-100 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-1.5 font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none cursor-pointer">
-                            <option value="Petugas 1 (Budi)">👤 Budi (Petugas 1)</option>
-                            <option value="Petugas 2 (Siti)">👤 Siti (Petugas 2)</option>
-                            <option value="Supervisor (Andi)">👔 Andi (Supervisor)</option>
+                            <option value="Petugas 1 (Budi)">Petugas 1 (Budi)</option>
+                            <option value="Petugas 2 (Siti)">Petugas 2 (Siti)</option>
+                            <option value="Supervisor (Andi)">Supervisor (Andi)</option>
                         </select>
                     </div>
                 </div>
@@ -264,9 +256,9 @@
             <!-- Welcome & Quick Actions Card -->
             <div class="bg-gradient-to-r from-slate-900 to-brand-950 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
                 <div class="relative z-10 max-w-2xl">
-                    <h2 class="text-xl sm:text-2xl font-bold mb-2">Siap Melakukan Stok Opname?</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold mb-2">Aplikasi Stok Opname (Single-Device)</h2>
                     <p class="text-slate-300 text-sm mb-6 leading-relaxed">
-                        Gunakan fitur ini untuk pencatatan fisik stok gudang secara kolaboratif. Upload data master barang Excel Anda, atau langsung mulai menghitung dengan scanner barcode kamera/handheld.
+                        Data stok opname Anda tersimpan secara otomatis dan aman di browser perangkat ini (`LocalStorage`). Anda dapat menambah/menghapus master barang, memilih lokasi rak, serta mengekspor laporan ke file Excel kapan saja.
                     </p>
                     <div class="flex flex-wrap gap-3">
                         <button onclick="switchTab('opname')" class="bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md transition flex items-center gap-2">
@@ -283,7 +275,6 @@
                         </button>
                     </div>
                 </div>
-                <!-- Subtle background decorative icon -->
                 <i class="fa-solid fa-boxes-packing absolute -right-6 -bottom-6 text-white/5 text-9xl pointer-events-none"></i>
             </div>
 
@@ -296,10 +287,9 @@
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-live"></div>
                             <h3 class="font-bold text-slate-800 text-base">Aktivitas Hitung Terkini</h3>
                         </div>
-                        <span class="text-xs text-slate-400">Pembaruan Langsung</span>
+                        <span class="text-xs text-slate-400">Penyimpanan Lokal</span>
                     </div>
                     <div id="dashboard-activity-list" class="space-y-3 max-h-[320px] overflow-y-auto pr-1">
-                        <!-- Activity items inserted dynamically -->
                         <div class="text-center py-8 text-slate-400 text-sm">
                             Belum ada aktivitas opname tercatat.
                         </div>
@@ -313,7 +303,6 @@
                         <span>Ringkasan Kategori</span>
                     </h3>
                     <div id="category-summary-list" class="space-y-3 text-sm">
-                        <!-- Category summary items generated dynamically -->
                         <div class="text-center py-8 text-slate-400 text-xs">
                             Belum ada data master.
                         </div>
@@ -334,26 +323,22 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-2">
-                    <!-- Open Add Modal -->
                     <button onclick="openItemModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-plus"></i>
                         <span>Tambah Item</span>
                     </button>
 
-                    <!-- Import Excel trigger -->
                     <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
                         <i class="fa-solid fa-file-import"></i>
                         <span>Import Excel / CSV</span>
                         <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="handleExcelImport(event)" class="hidden">
                     </label>
 
-                    <!-- Download Template -->
                     <button onclick="downloadSampleTemplate()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 border border-slate-200">
                         <i class="fa-solid fa-download text-slate-500"></i>
                         <span>Template Excel</span>
                     </button>
 
-                    <!-- Clear Master Data -->
                     <button onclick="confirmClearMaster()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
                         <i class="fa-solid fa-trash-can"></i>
                         <span>Hapus Semua</span>
@@ -390,7 +375,6 @@
                             </tr>
                         </thead>
                         <tbody id="master-table-body" class="divide-y divide-slate-100 font-normal">
-                            <!-- Rows loaded via JS -->
                         </tbody>
                     </table>
                 </div>
@@ -416,7 +400,7 @@
                             </span>
                             <span class="text-xs text-slate-300" id="opname-session-time">Petugas: Budi</span>
                         </div>
-                        <h2 class="text-lg sm:text-xl font-bold mt-1">Sistem Input & Scan Barcode Fast-Entry</h2>
+                        <h2 class="text-lg sm:text-xl font-bold mt-1">Input & Scan Barcode Fast-Entry</h2>
                     </div>
 
                     <!-- Lokasi Opname Selector & Filter Quick Pills -->
@@ -489,7 +473,6 @@
                                 </tr>
                             </thead>
                             <tbody id="opname-table-body" class="divide-y divide-slate-100">
-                                <!-- Dynamic rows -->
                             </tbody>
                         </table>
                     </div>
@@ -505,10 +488,9 @@
                             <i class="fa-solid fa-list-check text-brand-600"></i>
                             <span>Audit Log Sesi</span>
                         </h3>
-                        <span class="text-[10px] bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full font-bold">LIVE</span>
+                        <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-bold">LOCAL</span>
                     </div>
                     <div id="opname-activity-log" class="flex-1 overflow-y-auto space-y-3 pt-3 pr-1">
-                        <!-- Activity entries -->
                     </div>
                 </div>
             </div>
@@ -577,7 +559,6 @@
                             </tr>
                         </thead>
                         <tbody id="report-table-body" class="divide-y divide-slate-100 font-normal text-xs">
-                            <!-- JS loaded -->
                         </tbody>
                     </table>
                 </div>
@@ -596,18 +577,13 @@
             <div class="flex items-center space-x-4">
                 <button onclick="loadSampleData()" class="text-brand-600 hover:underline">Muat Ulang Demo</button>
                 <span>&bull;</span>
-                <span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Mode Online Sync</span>
+                <span class="text-emerald-600 font-medium"><i class="fa-solid fa-hard-drive text-[10px] mr-1"></i> Single-Device Local Storage</span>
             </div>
         </div>
     </footer>
 
     <!-- JS APP LOGIC -->
     <script>
-        /* ==========================================================================
-           STATE MANAGEMENT & INITIAL DATA
-           ========================================================================== */
-        
-        // Initial Sample Data for Quick Demo
         const INITIAL_SAMPLE_MASTER = [
             { id: "1", sku: "SKU-ELEK-001", nama: "Mouse Wireless Logitech M170", kategori: "Elektronik", lokasi: "Rak A1-01", stokSistem: 25 },
             { id: "2", sku: "SKU-ELEK-002", nama: "Keyboard Mechanical Keychron K2", kategori: "Elektronik", lokasi: "Rak A1-02", stokSistem: 10 },
@@ -619,21 +595,14 @@
             { id: "8", sku: "SKU-PRN-101", nama: "Tinta Printer Epson 664 Cyan", kategori: "Konsumabel", lokasi: "Rak D3-02", stokSistem: 20 }
         ];
 
-        // Global State variables
         let masterData = [];
-        let opnameData = {}; // Map keyed by SKU: { stokFisik, lastUpdated, petugas, notes, lokasiOpname }
-        let draftOpnameCounts = {}; // Temporary uncommitted counts keyed by SKU
+        let opnameData = {};
+        let draftOpnameCounts = {};
         let activityLog = [];
         let activeTab = 'dashboard';
         let opnameFilter = 'all';
         let activeUser = "Petugas 1 (Budi)";
         let activeOpnameLocation = "Gudang Utama - Rak A1";
-        let simInterval = null;
-        let isSimulating = false;
-
-        /* ==========================================================================
-           INITIALIZATION & LOCALSTORAGE
-           ========================================================================== */
 
         window.onload = function() {
             loadFromLocalStorage();
@@ -642,8 +611,6 @@
             } else {
                 refreshAllViews();
             }
-            
-            // Set initial user & location
             document.getElementById('user-selector').value = activeUser;
             const locSelect = document.getElementById('opname-active-location');
             if (locSelect) locSelect.value = activeOpnameLocation;
@@ -692,15 +659,10 @@
             }
         }
 
-        /* Change Location Handler */
         function changeOpnameLocation(val) {
             activeOpnameLocation = val;
             showToastNotification(`Lokasi Opname aktif diset ke: ${activeOpnameLocation}`, 'info');
         }
-
-        /* ==========================================================================
-           AUDIO & NOTIFICATION UTILS
-           ========================================================================== */
 
         function playAudioBeep(type = 'scan') {
             try {
@@ -730,9 +692,7 @@
                     osc.start();
                     osc.stop(ctx.currentTime + 0.2);
                 }
-            } catch (e) {
-                // Audio context suppressed
-            }
+            } catch (e) {}
         }
 
         function showToastNotification(message, type = 'info') {
@@ -774,7 +734,6 @@
             }, 3500);
         }
 
-        /* Custom confirmation modal */
         function showConfirmModal(title, message, onConfirm, isDanger = true) {
             const modal = document.getElementById('custom-modal');
             const modalContent = document.getElementById('modal-content');
@@ -817,10 +776,6 @@
             }, 200);
         }
 
-        /* ==========================================================================
-           TAB NAVIGATION
-           ========================================================================== */
-
         function switchTab(tabId) {
             activeTab = tabId;
             
@@ -858,10 +813,6 @@
             const el = document.getElementById('opname-session-time');
             if (el) el.textContent = `Petugas Aktif: ${activeUser}`;
         }
-
-        /* ==========================================================================
-           RELOAD & REFRESH UI
-           ========================================================================== */
 
         function refreshAllViews() {
             updateBadgesAndStats();
@@ -913,10 +864,6 @@
             document.getElementById('report-minus-count').textContent = minusCount;
             document.getElementById('report-plus-count').textContent = plusCount;
         }
-
-        /* ==========================================================================
-           TAB 1: DASHBOARD LOGIC
-           ========================================================================== */
 
         function renderDashboardView() {
             const listEl = document.getElementById('dashboard-activity-list');
@@ -976,10 +923,6 @@
                 }).join('');
             }
         }
-
-        /* ==========================================================================
-           TAB 2: MASTER BARANG LOGIC
-           ========================================================================== */
 
         function renderCategoryFilterOptions() {
             const select = document.getElementById('master-filter-category');
@@ -1154,10 +1097,6 @@
             );
         }
 
-        /* ==========================================================================
-           EXCEL IMPORT & TEMPLATE DOWNLOAD (SHEETJS)
-           ========================================================================== */
-
         function downloadSampleTemplate() {
             const templateData = [
                 { "SKU": "SKU-DEMO-001", "Nama Barang": "Contoh Produk A", "Kategori": "Elektronik", "Lokasi": "Rak A1", "Stok Sistem": 10 },
@@ -1231,10 +1170,6 @@
             e.target.value = '';
         }
 
-        /* ==========================================================================
-           TAB 3: REAL-TIME STOK OPNAME LOGIC (WITH DRAFT SAVE / CANCEL & LOCATION)
-           ========================================================================== */
-
         function setOpnameFilter(filter) {
             opnameFilter = filter;
             ['all', 'uncounted', 'match', 'diff'].forEach(f => {
@@ -1269,7 +1204,6 @@
                 return;
             }
 
-            // Immediately set draft and commit scan
             const currentVal = draftOpnameCounts[item.sku] !== undefined ? 
                 draftOpnameCounts[item.sku] : 
                 (opnameData[item.sku] && opnameData[item.sku].stokFisik !== null ? opnameData[item.sku].stokFisik : 0);
@@ -1282,7 +1216,6 @@
             playAudioBeep('scan');
         }
 
-        /* Set Draft value in memory on user typing / quick increment */
         function setDraftCount(sku, val) {
             const num = Math.max(0, parseInt(val) || 0);
             draftOpnameCounts[sku] = num;
@@ -1302,7 +1235,6 @@
             renderOpnameTable();
         }
 
-        /* Explicit Save Action */
         function commitOpnameSave(sku, forcedValue = null) {
             const item = masterData.find(i => i.sku === sku);
             if (!item) return;
@@ -1319,7 +1251,7 @@
                 notes: opnameData[sku] ? (opnameData[sku].notes || '') : ''
             };
 
-            delete draftOpnameCounts[sku]; // clear draft
+            delete draftOpnameCounts[sku];
 
             const diff = prev === null ? finalVal : (finalVal - prev);
             const changeDisplay = diff >= 0 ? `+${diff}` : `${diff}`;
@@ -1337,10 +1269,9 @@
             saveToLocalStorage();
             refreshAllViews();
             playAudioBeep('success');
-            showToastNotification(`Hasil opname '${item.nama}' disimpaan: ${finalVal} unit di ${activeOpnameLocation}`, 'success');
+            showToastNotification(`Hasil opname '${item.nama}' disimpan: ${finalVal} unit`, 'success');
         }
 
-        /* Explicit Cancel / Reset Draft Action */
         function cancelOpnameDraft(sku) {
             delete draftOpnameCounts[sku];
             renderOpnameTable();
@@ -1376,7 +1307,6 @@
                     const savedOp = opnameData[item.sku] || { stokFisik: null, notes: '' };
                     const isCommitted = savedOp.stokFisik !== null && savedOp.stokFisik !== undefined;
                     
-                    // Check if there is an uncommitted draft
                     const hasDraft = draftOpnameCounts[item.sku] !== undefined;
                     const displayCount = hasDraft ? draftOpnameCounts[item.sku] : (isCommitted ? savedOp.stokFisik : '');
                     
@@ -1404,23 +1334,19 @@
 
                     return `
                         <tr class="${rowBgClass} hover:bg-slate-50 transition">
-                            <!-- SKU & Name -->
                             <td class="px-4 py-3">
                                 <div class="font-bold text-slate-800 text-xs sm:text-sm">${escapeHtml(item.nama)}</div>
                                 <div class="text-[11px] font-mono text-brand-600 font-semibold">${escapeHtml(item.sku)}</div>
                             </td>
 
-                            <!-- Rak -->
                             <td class="px-3 py-3 text-xs text-slate-500">
                                 <span class="bg-slate-100 px-2 py-0.5 rounded text-[11px] font-medium">${escapeHtml(item.lokasi || '-')}</span>
                             </td>
 
-                            <!-- Stok Sistem -->
                             <td class="px-3 py-3 text-center font-mono font-semibold text-slate-600">
                                 ${item.stokSistem}
                             </td>
 
-                            <!-- Physical Direct Numeric Input -->
                             <td class="px-4 py-3 text-center">
                                 <div class="flex items-center justify-center gap-1">
                                     <input type="number" min="0" value="${displayCount}" 
@@ -1430,31 +1356,25 @@
                                 </div>
                             </td>
 
-                            <!-- Selisih -->
                             <td class="px-3 py-3 text-center font-mono font-bold text-sm">
                                 ${(isCommitted || hasDraft) ? (selisih > 0 ? `+${selisih}` : selisih) : '-'}
                             </td>
 
-                            <!-- Status Badge -->
                             <td class="px-3 py-3 text-center">
                                 ${badgeHTML}
                             </td>
 
-                            <!-- Save / Cancel Buttons -->
                             <td class="px-4 py-3 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
-                                    <!-- Increment quick buttons -->
                                     <button onclick="modifyDraftCount('${item.sku}', 1)" title="Tambah +1" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-lg transition border border-slate-200">
                                         +1
                                     </button>
 
-                                    <!-- Save Button -->
                                     <button onclick="commitOpnameSave('${item.sku}')" title="Simpan Hasil Stok Opname" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-1">
                                         <i class="fa-solid fa-check"></i>
                                         <span>Simpan</span>
                                     </button>
 
-                                    <!-- Cancel / Reset Button (Shown if draft active) -->
                                     ${hasDraft ? `
                                         <button onclick="cancelOpnameDraft('${item.sku}')" title="Batal / Reset" class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-xl transition flex items-center gap-1">
                                             <i class="fa-solid fa-xmark"></i>
@@ -1468,7 +1388,6 @@
                 }).join('');
             }
 
-            // Render Side Activity Log
             const logContainer = document.getElementById('opname-activity-log');
             if (activityLog.length === 0) {
                 logContainer.innerHTML = `<div class="text-center py-10 text-slate-400 text-xs">Belum ada catatan aktivitas opname.</div>`;
@@ -1488,64 +1407,6 @@
                 `).join('');
             }
         }
-
-        /* Multi-user simulation update */
-        function toggleMultiUserSimulation() {
-            isSimulating = !isSimulating;
-            const btn = document.getElementById('sim-btn');
-            const text = document.getElementById('sim-text');
-
-            if (isSimulating) {
-                btn.className = "text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-lg border border-emerald-500 font-medium transition flex items-center gap-1.5 shadow-sm";
-                text.textContent = "Simulasi Tim (Aktif)";
-                showToastNotification('Simulasi tim gudang aktif. Data opname tim akan masuk secara berkala.', 'info');
-
-                simInterval = setInterval(() => {
-                    if (masterData.length === 0) return;
-                    
-                    const randomItem = masterData[Math.floor(Math.random() * masterData.length)];
-                    const randomUsers = ["Petugas 2 (Siti)", "Petugas 3 (Rian)", "Supervisor (Andi)"];
-                    const simUser = randomUsers[Math.floor(Math.random() * randomUsers.length)];
-
-                    const current = opnameData[randomItem.sku] ? (opnameData[randomItem.sku].stokFisik || 0) : randomItem.stokSistem;
-                    const delta = Math.floor(Math.random() * 3) + 1;
-                    const newCount = current + delta;
-                    const timeStr = new Date().toLocaleTimeString();
-
-                    opnameData[randomItem.sku] = {
-                        stokFisik: newCount,
-                        lastUpdated: timeStr,
-                        petugas: simUser,
-                        lokasiOpname: "Gudang Utama - Rak B" + Math.floor(Math.random() * 3 + 1),
-                        notes: "Update via Sync Tim"
-                    };
-
-                    activityLog.unshift({
-                        timestamp: timeStr,
-                        sku: randomItem.sku,
-                        nama: randomItem.nama,
-                        change: `+${delta}`,
-                        petugas: simUser,
-                        lokasi: opnameData[randomItem.sku].lokasiOpname,
-                        type: 'update'
-                    });
-
-                    saveToLocalStorage();
-                    refreshAllViews();
-                    playAudioBeep('scan');
-
-                }, 4000);
-            } else {
-                clearInterval(simInterval);
-                btn.className = "text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 font-medium transition flex items-center gap-1.5";
-                text.textContent = "Simulasi Tim (Off)";
-                showToastNotification('Simulasi tim dihentikan.', 'info');
-            }
-        }
-
-        /* ==========================================================================
-           TAB 4: LAPORAN & EXCEL EXPORT LOGIC
-           ========================================================================== */
 
         function renderReportTable() {
             const tbody = document.getElementById('report-table-body');
@@ -1635,19 +1496,19 @@
             XLSX.utils.book_append_sheet(workbook, worksheet, "Hasil Stok Opname");
 
             const cols = [
-                { wch: 5 },  // No
-                { wch: 18 }, // SKU
-                { wch: 35 }, // Nama
-                { wch: 15 }, // Kategori
-                { wch: 15 }, // Lokasi Master
-                { wch: 22 }, // Lokasi Opname
-                { wch: 12 }, // Stok Sistem
-                { wch: 18 }, // Hasil Hitung
-                { wch: 15 }, // Selisih
-                { wch: 22 }, // Status
-                { wch: 20 }, // Petugas
-                { wch: 15 }, // Waktu
-                { wch: 25 }  // Catatan
+                { wch: 5 },
+                { wch: 18 },
+                { wch: 35 },
+                { wch: 15 },
+                { wch: 15 },
+                { wch: 22 },
+                { wch: 12 },
+                { wch: 18 },
+                { wch: 15 },
+                { wch: 22 },
+                { wch: 20 },
+                { wch: 15 },
+                { wch: 25 }
             ];
             worksheet['!cols'] = cols;
 
