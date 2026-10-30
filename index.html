@@ -328,6 +328,12 @@
                         <span>Tambah Item</span>
                     </button>
 
+                    <!-- Export Master Data Button -->
+                    <button onclick="exportMasterToExcel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-file-export"></i>
+                        <span>Export Master Excel</span>
+                    </button>
+
                     <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
                         <i class="fa-solid fa-file-import"></i>
                         <span>Import Excel / CSV</span>
@@ -1109,6 +1115,43 @@
             
             XLSX.writeFile(workbook, "Template_Master_Barang_Opname.xlsx");
             showToastNotification('Template Excel berhasil diunduh.', 'success');
+        }
+
+        /* NEW FUNCTION: EXPORT MASTER DATA TO EXCEL FOR RE-IMPORT */
+        function exportMasterToExcel() {
+            if (masterData.length === 0) {
+                showToastNotification('Master data kosong, tidak ada yang diekspor!', 'warning');
+                return;
+            }
+
+            const exportRows = masterData.map(item => ({
+                "SKU": item.sku,
+                "Nama Barang": item.nama,
+                "Kategori": item.kategori || "",
+                "Lokasi": item.lokasi || "",
+                "Stok Sistem": item.stokSistem
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(exportRows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Master Data");
+
+            const cols = [
+                { wch: 18 }, // SKU
+                { wch: 35 }, // Nama Barang
+                { wch: 18 }, // Kategori
+                { wch: 18 }, // Lokasi
+                { wch: 14 }  // Stok Sistem
+            ];
+            worksheet['!cols'] = cols;
+
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const filename = `Master_Barang_${dateStr}.xlsx`;
+
+            XLSX.writeFile(workbook, filename);
+            playAudioBeep('success');
+            showToastNotification(`Master data (${masterData.length} item) berhasil diekspor!`, 'success');
         }
 
         function handleExcelImport(e) {
